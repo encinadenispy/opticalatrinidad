@@ -189,6 +189,7 @@
     display:flex;
     flex-direction:column;
     border:1px solid rgba(201,169,122,0.12);
+    cursor:pointer;
   }
   .product-card:hover{
     transform:translateY(-6px);
@@ -338,6 +339,179 @@
     color:var(--texto-muted);
   }
 
+  /* Modal de Detalles de Producto */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 7, 5, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modal-card {
+    background: var(--blanco);
+    border-radius: 12px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid rgba(201,169,122,0.2);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+  }
+  .modal-overlay.active .modal-card {
+    transform: translateY(0);
+  }
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--crema);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    color: var(--negro);
+    transition: all 0.2s ease;
+  }
+  .modal-close:hover {
+    background: var(--negro);
+    color: var(--dorado);
+  }
+  .modal-gallery {
+    background: var(--crema);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+  .modal-main-img-wrap {
+    aspect-ratio: 4/3;
+    width: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+  }
+  .modal-main-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .modal-thumbs {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  .modal-thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .modal-thumb.active, .modal-thumb:hover {
+    border-color: var(--dorado);
+    opacity: 1;
+  }
+  .modal-body {
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .modal-badge {
+    align-self: flex-start;
+    background: var(--crema);
+    color: var(--marron-medio);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    padding: 0.3rem 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 2px;
+    margin-bottom: 0.8rem;
+  }
+  .modal-brand {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--dorado);
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+  }
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 500;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .modal-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    color: var(--marron-medio);
+    margin-bottom: 1.2rem;
+  }
+  .modal-desc {
+    font-size: 0.85rem;
+    color: var(--texto-muted);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  .modal-colors-sec {
+    margin-bottom: 2rem;
+  }
+  .modal-colors-title {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--negro);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+  .modal-colors-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .modal-color-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--crema);
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: var(--marron-medio);
+  }
+
   /* Footer Moderno */
   .footer{
     background:var(--negro);
@@ -387,6 +561,13 @@
     .filter-bar{
       justify-content:flex-start;
       padding:0.8rem 1rem;
+    }
+    .modal-card {
+      grid-template-columns: 1fr;
+      max-height: 85vh;
+    }
+    .modal-body {
+      padding: 1.5rem;
     }
   }
 
@@ -439,6 +620,33 @@
     </div>
   </div>
 </main>
+
+<div class="modal-overlay" id="product-modal">
+  <div class="modal-card">
+    <button class="modal-close" id="modal-close-btn" aria-label="Cerrar modal">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="modal-gallery">
+      <div class="modal-main-img-wrap" id="modal-main-img-wrap"></div>
+      <div class="modal-thumbs" id="modal-thumbs"></div>
+    </div>
+    <div class="modal-body">
+      <span class="modal-badge" id="modal-badge"></span>
+      <div class="modal-brand" id="modal-brand"></div>
+      <h2 class="modal-title" id="modal-title"></h2>
+      <div class="modal-price" id="modal-price"></div>
+      <p class="modal-desc" id="modal-desc"></p>
+      <div class="modal-colors-sec" id="modal-colors-sec">
+        <div class="modal-colors-title">Colores disponibles</div>
+        <div class="modal-colors-list" id="modal-colors-list"></div>
+      </div>
+      <a class="btn-wpp" id="modal-wpp-btn" href="#" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.854L.057 23.982l6.305-1.654A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.89 0-3.659-.498-5.189-1.37l-.372-.22-3.742.982.998-3.64-.242-.384A9.968 9.968 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        Consultar por WhatsApp
+      </a>
+    </div>
+  </div>
+</div>
 
 <footer class="footer">
   <div class="container">
@@ -512,6 +720,87 @@ function buildFilters() {
   });
 }
 
+// ── MODAL DETALLE DE PRODUCTO ──────────────────────────────
+window.openModal = function(id) {
+  const p = products.find(item => item.id === id);
+  if (!p) return;
+
+  const wppNum = settings.wppNumber || '595981234567';
+  const wppMsg = settings.wppMessage || 'Hola! Me interesa este producto: ';
+  const msg = encodeURIComponent(wppMsg + p.name + (p.brand ? ' — ' + p.brand : ''));
+  
+  document.getElementById('modal-wpp-btn').href = `https://wa.me/${wppNum}?text=${msg}`;
+  document.getElementById('modal-title').textContent = p.name;
+  document.getElementById('modal-brand').textContent = p.brand ? p.brand.toUpperCase() : '';
+  document.getElementById('modal-price').textContent = p.price || '';
+  document.getElementById('modal-desc').textContent = p.description || 'Sin descripción disponible.';
+
+  const badgeEl = document.getElementById('modal-badge');
+  if (p.category) {
+    badgeEl.textContent = p.category;
+    badgeEl.style.display = 'inline-block';
+  } else {
+    badgeEl.style.display = 'none';
+  }
+
+  // Galería de fotos
+  const mainWrap = document.getElementById('modal-main-img-wrap');
+  const thumbsWrap = document.getElementById('modal-thumbs');
+  
+  if (p.images && p.images.length) {
+    mainWrap.innerHTML = `<img class="modal-main-img" id="modal-current-img" src="${p.images[0]}" alt="${p.name}">`;
+    if (p.images.length > 1) {
+      thumbsWrap.style.display = 'flex';
+      thumbsWrap.innerHTML = p.images.map((img, idx) => 
+        `<img class="modal-thumb ${idx === 0 ? 'active' : ''}" src="${img}" onclick="setModalImg('${img}', this)">`
+      ).join('');
+    } else {
+      thumbsWrap.style.display = 'none';
+    }
+  } else {
+    mainWrap.innerHTML = `<div class="product-placeholder">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M4 16l4-4 4 4 4-6 4 6"/><rect x="2" y="3" width="20" height="18" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/></svg>
+      <span>SIN FOTO</span>
+    </div>`;
+    thumbsWrap.style.display = 'none';
+  }
+
+  // Colores
+  const colorsSec = document.getElementById('modal-colors-sec');
+  const colorsList = document.getElementById('modal-colors-list');
+  if (p.colors && p.colors.length) {
+    colorsSec.style.display = 'block';
+    colorsList.innerHTML = p.colors.map(c => 
+      `<div class="modal-color-tag">
+        <span class="color-dot" style="background:${c.hex}"></span>
+        <span>${c.name}</span>
+      </div>`
+    ).join('');
+  } else {
+    colorsSec.style.display = 'none';
+  }
+
+  document.getElementById('product-modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
+
+window.setModalImg = function(src, el) {
+  const mainImg = document.getElementById('modal-current-img');
+  if (mainImg) mainImg.src = src;
+  document.querySelectorAll('.modal-thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+};
+
+function closeModal() {
+  document.getElementById('product-modal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+document.getElementById('product-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'product-modal') closeModal();
+});
+
 // ── RENDER GRID ───────────────────────────────────────────
 function renderGrid() {
   const grid = document.getElementById('catalog-grid');
@@ -541,7 +830,7 @@ function renderGrid() {
           ${p.colors.map(c=>`<span class="color-dot" style="background:${c.hex}" title="${c.name}"></span>`).join('')}
           <span class="colors-label">${p.colors.map(c=>c.name).join(', ')}</span>
         </div>` : '';
-    return `<div class="product-card">
+    return `<div class="product-card" onclick="openModal('${p.id}')">
       <div class="product-img-wrap">
         ${imgHtml}
         ${p.category?`<span class="product-badge">${p.category}</span>`:''}
@@ -552,7 +841,7 @@ function renderGrid() {
         ${p.description?`<div class="product-desc">${p.description}</div>`:''}
         ${colorsHtml}
         ${p.price?`<div class="product-price">${p.price}</div>`:''}
-        <a class="btn-wpp" href="${wppLink}" target="_blank" rel="noopener">
+        <a class="btn-wpp" href="${wppLink}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.854L.057 23.982l6.305-1.654A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.89 0-3.659-.498-5.189-1.37l-.372-.22-3.742.982.998-3.64-.242-.384A9.968 9.968 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
           Consultar por WhatsApp
         </a>
