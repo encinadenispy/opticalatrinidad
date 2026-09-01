@@ -199,18 +199,19 @@
   .product-img-wrap{
     aspect-ratio:4/3;
     overflow:hidden;
-    background:var(--crema);
+    background:#FAFAFA;
     position:relative;
+    padding: 0.8rem; /* Espacio para respirar */
   }
   .product-img{
     width:100%;
     height:100%;
-    object-fit:cover;
+    object-fit:contain; /* MOSTRAR FOTO COMPLETA SIN RECORTAR */
     transition:transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     display:block;
   }
   .product-card:hover .product-img{
-    transform:scale(1.06);
+    transform:scale(1.05);
   }
   .product-placeholder{
     width:100%;
@@ -243,6 +244,7 @@
     text-transform:uppercase;
     border-radius:2px;
     border:1px solid rgba(201,169,122,0.25);
+    z-index: 2;
   }
   .product-info{
     padding:1.5rem;
@@ -402,7 +404,7 @@
     color: var(--dorado);
   }
   .modal-gallery {
-    background: var(--crema);
+    background: #FAFAFA;
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
@@ -415,11 +417,12 @@
     overflow: hidden;
     background: #fff;
     position: relative;
+    padding: 0.5rem;
   }
   .modal-main-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain; /* MOSTRAR COMPLETA EN MODAL */
   }
   .modal-thumbs {
     display: flex;
@@ -431,12 +434,14 @@
     width: 60px;
     height: 60px;
     border-radius: 4px;
-    object-fit: cover;
+    object-fit: contain;
+    background: #fff;
     cursor: pointer;
-    border: 2px solid transparent;
+    border: 1px solid #E2DDD4;
     opacity: 0.6;
     transition: all 0.2s ease;
     flex-shrink: 0;
+    padding: 2px;
   }
   .modal-thumb.active, .modal-thumb:hover {
     border-color: var(--dorado);
@@ -621,6 +626,7 @@
   </div>
 </main>
 
+<!-- Modal de Detalle de Producto -->
 <div class="modal-overlay" id="product-modal">
   <div class="modal-card">
     <button class="modal-close" id="modal-close-btn" aria-label="Cerrar modal">
