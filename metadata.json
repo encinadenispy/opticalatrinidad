@@ -1,0 +1,6 @@
+{
+  "name": "L'Optique Atelier | Catálogo Premium de Óptica",
+  "description": "Catálogo de alta gama para boutique óptica moderna con monturas de lujo, enlace directo a WhatsApp y panel de administración en tiempo real.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

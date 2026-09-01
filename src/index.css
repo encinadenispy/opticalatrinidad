@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    --font-heading: 'Cinzel', Georgia, serif;
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #f5f2ed;
+    color: #1a1a1a;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-cinzel {
+    font-family: var(--font-heading);
+    letter-spacing: 0.05em;
+  }
+
+  .font-serif-luxury {
+    font-family: var(--font-serif);
+  }
+}
+
+/* Custom scrollbars for High Density boutique feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f2ed;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #7d5c41;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5a432f;
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #7d5c41 0%, #a67c52 50%, #5a432f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.border-gold-subtle {
+  border-color: rgba(125, 92, 65, 0.25);
+}
+
+.bg-glass-luxury {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+}
+
+
