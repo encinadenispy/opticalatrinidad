@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Óptica La Trinidad — Catálogo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--negro:#0F0A06;--marron-oscuro:#2A1A0E;--marron-medio:#5C3D20;--dorado:#C9A97A;--dorado-claro:#E8D5B0;--crema:#F5F0EB;--blanco:#FEFCF9;--texto-muted:#8A7060;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:var(--crema);color:var(--negro);}
+
+  .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(245,240,235,0.93);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,169,122,0.2);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:62px;}
+  .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--negro);letter-spacing:0.1em;text-decoration:none;}
+  .nav-logo span{color:var(--dorado);}
+
+  /* Skeleton loader */
+  .skeleton-hero{background:var(--negro);height:280px;margin-top:62px;display:flex;align-items:center;justify-content:center;}
+  .skeleton-text{height:20px;background:rgba(255,255,255,0.07);border-radius:2px;margin:0.5rem auto;}
+
+  .hero{background:var(--negro);padding:6rem 2rem 4rem;text-align:center;margin-top:62px;}
+  .hero-eyebrow{font-size:0.7rem;letter-spacing:0.3em;color:var(--dorado);font-weight:400;margin-bottom:1.4rem;text-transform:uppercase;}
+  .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,5.5rem);font-weight:300;line-height:1.03;color:var(--blanco);}
+  .hero h1 em{font-style:italic;color:var(--dorado-claro);}
+  .hero-sub{margin-top:1.2rem;font-size:0.85rem;color:rgba(255,255,255,0.45);letter-spacing:0.06em;}
+
+  .filter-bar{padding:1.25rem 2rem;background:var(--blanco);border-bottom:1px solid rgba(0,0,0,0.06);display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;position:sticky;top:62px;z-index:50;}
+  .filter-label{font-size:0.68rem;letter-spacing:0.12em;color:var(--texto-muted);margin-right:0.25rem;}
+  .filter-btn{padding:0.35rem 1rem;border:1px solid rgba(201,169,122,0.35);border-radius:2px;background:transparent;font-size:0.75rem;cursor:pointer;color:var(--marron-medio);transition:all 0.18s;letter-spacing:0.04em;font-family:'Inter',sans-serif;}
+  .filter-btn:hover,.filter-btn.active{background:var(--negro);color:var(--dorado);border-color:var(--negro);}
+
+  .catalog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:rgba(0,0,0,0.07);}
+
+  .product-card{background:var(--blanco);transition:transform 0.3s;}
+  .product-card:hover{transform:translateY(-2px);}
+  .product-card:hover .product-img{transform:scale(1.04);}
+  .product-img-wrap{aspect-ratio:4/3;overflow:hidden;background:var(--crema);position:relative;}
+  .product-img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s;display:block;}
+  .product-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#f0ebe4,#e8ddd0);}
+  .product-placeholder svg{opacity:0.25;}
+  .product-placeholder span{font-size:0.65rem;color:var(--texto-muted);letter-spacing:0.12em;}
+  .product-badge{position:absolute;top:1rem;left:1rem;background:var(--negro);color:var(--dorado);font-size:0.62rem;letter-spacing:0.16em;padding:0.28rem 0.65rem;font-weight:500;}
+  .product-info{padding:1.25rem 1.5rem 1.5rem;}
+  .product-brand{font-size:0.65rem;letter-spacing:0.2em;color:var(--dorado);margin-bottom:0.4rem;}
+  .product-name{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;line-height:1.2;color:var(--negro);}
+  .product-desc{font-size:0.75rem;color:var(--texto-muted);margin-top:0.4rem;line-height:1.6;}
+  .product-colors{display:flex;gap:0.35rem;margin:0.75rem 0 0.25rem;align-items:center;}
+  .color-dot{width:13px;height:13px;border-radius:50%;border:1px solid rgba(0,0,0,0.1);flex-shrink:0;}
+  .colors-label{font-size:0.68rem;color:var(--texto-muted);}
+  .product-price{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--marron-medio);margin:0.5rem 0 1rem;}
+  .btn-wpp{display:flex;align-items:center;justify-content:center;gap:0.6rem;width:100%;padding:0.85rem;background:var(--negro);color:var(--dorado);border:none;cursor:pointer;font-size:0.75rem;letter-spacing:0.12em;font-family:'Inter',sans-serif;font-weight:500;transition:all 0.2s;text-decoration:none;}
+  .btn-wpp:hover{background:var(--marron-oscuro);color:var(--dorado-claro);}
+
+  .catalog-empty{padding:6rem 2rem;text-align:center;grid-column:1/-1;}
+  .catalog-empty p{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:var(--texto-muted);}
+
+  .footer{background:var(--negro);padding:2rem;text-align:center;margin-top:1px;}
+  .footer p{font-size:0.72rem;color:rgba(255,255,255,0.3);letter-spacing:0.1em;}
+
+  /* skeleton cards */
+  .skel-card{background:var(--blanco);}
+  .skel-img{aspect-ratio:4/3;background:linear-gradient(90deg,#ede8e0 25%,#e4ddd4 50%,#ede8e0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;}
+  .skel-line{height:14px;background:linear-gradient(90deg,#ede8e0 25%,#e4ddd4 50%,#ede8e0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:2px;margin:0.6rem 1.5rem;}
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+  @media(max-width:540px){.catalog-grid{grid-template-columns:1fr 1fr;}.hero{padding:4.5rem 1.5rem 3rem;}.filter-bar{padding:1rem;}.nav{padding:0 1rem;}}
+  @media(max-width:380px){.catalog-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="index.html" id="nav-logo">Óptica <span>La Trinidad</span></a>
+</nav>
+
+<div class="hero" id="hero-section">
+  <p class="hero-eyebrow" id="hero-eyebrow">Colección 2026</p>
+  <h1 id="hero-title">Ver con <em>estilo</em><br>es verlo todo</h1>
+  <p class="hero-sub" id="hero-sub">Monturas · Lentes de sol · Óptica médica</p>
+</div>
+
+<div class="filter-bar" id="filter-bar">
+  <span class="filter-label">FILTRAR</span>
+  <button class="filter-btn active" onclick="filterBy('all',this)">Todos</button>
+</div>
+
+<div class="catalog-grid" id="catalog-grid">
+  <!-- skeletons mientras carga -->
+  <div class="skel-card"><div class="skel-img"></div><div class="skel-line" style="width:40%;margin-top:1.2rem"></div><div class="skel-line" style="width:70%"></div><div class="skel-line" style="width:55%"></div></div>
+  <div class="skel-card"><div class="skel-img"></div><div class="skel-line" style="width:35%;margin-top:1.2rem"></div><div class="skel-line" style="width:65%"></div><div class="skel-line" style="width:50%"></div></div>
+  <div class="skel-card"><div class="skel-img"></div><div class="skel-line" style="width:45%;margin-top:1.2rem"></div><div class="skel-line" style="width:75%"></div><div class="skel-line" style="width:60%"></div></div>
+</div>
+
+<footer class="footer">
+  <p id="footer-name">Óptica La Trinidad</p>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD1zhcZFNxMRh4L_YV1IEJA8TE6ge0TW9Q",
+  authDomain: "optica-la-trinidad.firebaseapp.com",
+  projectId: "optica-la-trinidad",
+  storageBucket: "optica-la-trinidad.firebasestorage.app",
+  messagingSenderId: "849483364285",
+  appId: "1:849483364285:web:1ff892f5ffa76b12d544d4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+let products = [];
+let settings = {};
+let activeFilter = 'all';
+
+// ── SETTINGS ─────────────────────────────────────────────
+async function loadSettings() {
+  try {
+    const snap = await getDoc(doc(db,'config','settings'));
+    if (snap.exists()) { settings = snap.data(); applySettings(); }
+  } catch(e) {}
+}
+
+function applySettings() {
+  if (settings.shopName) {
+    document.getElementById('nav-logo').textContent = settings.shopName;
+    document.getElementById('footer-name').textContent = settings.shopName;
+    document.getElementById('page-title').textContent = settings.shopName + ' — Catálogo';
+  }
+  if (settings.eyebrow) document.getElementById('hero-eyebrow').textContent = settings.eyebrow;
+  if (settings.hero1 && settings.hero2)
+    document.getElementById('hero-title').innerHTML = `${settings.hero1}<br><em>${settings.hero2}</em>`;
+  if (settings.subtitle) document.getElementById('hero-sub').textContent = settings.subtitle;
+}
+
+// ── FILTROS ───────────────────────────────────────────────
+window.filterBy = function(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+};
+
+function buildFilters() {
+  const cats = [...new Set(products.filter(p=>p.visible&&p.category).map(p=>p.category))];
+  const bar = document.getElementById('filter-bar');
+  bar.innerHTML = '<span class="filter-label">FILTRAR</span>';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'filter-btn' + (activeFilter==='all'?' active':'');
+  allBtn.textContent = 'Todos';
+  allBtn.onclick = function(){ filterBy('all',this); };
+  bar.appendChild(allBtn);
+  cats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (activeFilter===c?' active':'');
+    btn.textContent = c;
+    btn.onclick = function(){ filterBy(c,this); };
+    bar.appendChild(btn);
+  });
+}
+
+// ── RENDER GRID ───────────────────────────────────────────
+function renderGrid() {
+  const grid = document.getElementById('catalog-grid');
+  const wppNum = settings.wppNumber || '595981234567';
+  const wppMsg = settings.wppMessage || 'Hola! Me interesa este producto: ';
+
+  const visible = products.filter(p =>
+    p.visible && (activeFilter==='all' || p.category===activeFilter)
+  );
+
+  if (!visible.length) {
+    grid.innerHTML = '<div class="catalog-empty"><p>Pronto nuevos productos.<br>Volvé en breve.</p></div>';
+    return;
+  }
+
+  grid.innerHTML = visible.map(p => {
+    const msg = encodeURIComponent(wppMsg + p.name + (p.brand?' — '+p.brand:''));
+    const wppLink = `https://wa.me/${wppNum}?text=${msg}`;
+    const imgHtml = (p.images&&p.images.length)
+      ? `<img class="product-img" src="${p.images[0]}" alt="${p.name}" loading="lazy">`
+      : `<div class="product-placeholder">
+          <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M4 16l4-4 4 4 4-6 4 6"/><rect x="2" y="3" width="20" height="18" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/></svg>
+          <span>SIN FOTO</span>
+        </div>`;
+    const colorsHtml = (p.colors&&p.colors.length)
+      ? `<div class="product-colors">
+          ${p.colors.map(c=>`<span class="color-dot" style="background:${c.hex}" title="${c.name}"></span>`).join('')}
+          <span class="colors-label">${p.colors.map(c=>c.name).join(', ')}</span>
+        </div>` : '';
+    return `<div class="product-card">
+      <div class="product-img-wrap">
+        ${imgHtml}
+        ${p.category?`<span class="product-badge">${p.category}</span>`:''}
+      </div>
+      <div class="product-info">
+        ${p.brand?`<div class="product-brand">${p.brand.toUpperCase()}</div>`:''}
+        <div class="product-name">${p.name}</div>
+        ${p.description?`<div class="product-desc">${p.description}</div>`:''}
+        ${colorsHtml}
+        ${p.price?`<div class="product-price">${p.price}</div>`:''}
+        <a class="btn-wpp" href="${wppLink}" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.854L.057 23.982l6.305-1.654A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.89 0-3.659-.498-5.189-1.37l-.372-.22-3.742.982.998-3.64-.242-.384A9.968 9.968 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          Consultar por WhatsApp
+        </a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── LISTENER EN TIEMPO REAL ───────────────────────────────
+function startListener() {
+  onSnapshot(collection(db,'products'), snap => {
+    products = snap.docs.map(d=>({id:d.id,...d.data()}));
+    products.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    buildFilters();
+    renderGrid();
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────────
+await loadSettings();
+startListener();
+</script>
+</body>
+</html>

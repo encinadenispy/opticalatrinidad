@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Óptica La Trinidad</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --negro:#0F0A06; --marron-oscuro:#2A1A0E; --marron-medio:#5C3D20;
+    --dorado:#C9A97A; --dorado-claro:#E8D5B0; --crema:#F5F0EB;
+    --blanco:#FEFCF9; --texto-muted:#8A7060;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:#f0ebe3;color:var(--negro);min-height:100vh;}
+
+  .dash-header{background:var(--negro);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+  .dash-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:var(--blanco);letter-spacing:0.1em;}
+  .dash-logo span{color:var(--dorado);}
+  .dash-logo small{display:block;font-size:0.6rem;letter-spacing:0.2em;color:var(--dorado);font-family:'Inter',sans-serif;margin-top:-2px;}
+  .header-right{display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;}
+  .btn-go-catalog{padding:0.45rem 1rem;background:transparent;color:var(--dorado);border:1px solid rgba(201,169,122,0.4);border-radius:3px;font-size:0.75rem;letter-spacing:0.08em;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:none;transition:all 0.2s;}
+  .btn-go-catalog:hover{background:var(--dorado);color:var(--negro);}
+  .sync-badge{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.68rem;letter-spacing:0.08em;padding:0.3rem 0.7rem;border-radius:2px;white-space:nowrap;}
+  .sync-badge.local{background:#fef9e7;color:#8a6d0b;border:1px solid rgba(138,109,11,0.2);}
+  .sync-badge.connected{background:#e8f5e9;color:#2e7d32;border:1px solid rgba(46,125,50,0.2);}
+  .sync-badge.syncing{background:#e3f2fd;color:#1565c0;border:1px solid rgba(21,101,192,0.2);}
+  .sync-badge.error{background:#fce4e4;color:#b83232;border:1px solid rgba(184,50,50,0.2);}
+  .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
+  .dot.pulse{animation:pulse 1.5s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+  .dash-tabs{background:var(--marron-oscuro);display:flex;border-bottom:1px solid rgba(201,169,122,0.15);overflow-x:auto;}
+  .dash-tab{padding:0.85rem 1.5rem;border:none;background:transparent;color:rgba(255,255,255,0.4);font-size:0.75rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0;}
+  .dash-tab.active{color:var(--dorado);border-bottom-color:var(--dorado);}
+  .dash-tab:hover:not(.active){color:rgba(255,255,255,0.7);}
+
+  .dash-content{padding:2rem 2.5rem;max-width:1200px;}
+  .dash-section{display:none;}
+  .dash-section.active{display:block;}
+  .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;}
+  .dash-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;align-items:start;}
+  .dash-card{background:var(--blanco);border-radius:4px;padding:1.5rem;border:1px solid rgba(0,0,0,0.07);}
+  .dash-card h3{font-size:0.68rem;letter-spacing:0.15em;color:var(--texto-muted);margin-bottom:1.2rem;font-weight:500;}
+
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+  .stat-box{background:var(--blanco);border:1px solid rgba(0,0,0,0.07);border-radius:4px;padding:1.2rem 1.5rem;}
+  .stat-box.accent{border-left:3px solid var(--dorado);}
+  .stat-num{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--negro);line-height:1;}
+  .stat-label{font-size:0.68rem;letter-spacing:0.12em;color:var(--texto-muted);margin-top:0.3rem;}
+
+  .form-group{margin-bottom:1rem;}
+  .form-group label{display:block;font-size:0.7rem;letter-spacing:0.1em;color:var(--texto-muted);margin-bottom:0.4rem;font-weight:500;}
+  .form-control{width:100%;padding:0.6rem 0.8rem;border:1px solid rgba(0,0,0,0.12);border-radius:3px;font-size:0.85rem;font-family:'Inter',sans-serif;background:var(--blanco);color:var(--negro);transition:border-color 0.18s;}
+  .form-control:focus{outline:none;border-color:var(--dorado);box-shadow:0 0 0 3px rgba(201,169,122,0.12);}
+  select.form-control{cursor:pointer;}
+  textarea.form-control{resize:vertical;min-height:80px;}
+
+  .btn-primary{padding:0.65rem 1.5rem;background:var(--negro);color:var(--dorado);border:none;border-radius:3px;font-size:0.75rem;letter-spacing:0.1em;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;transition:all 0.2s;}
+  .btn-primary:hover{background:var(--marron-oscuro);}
+  .btn-primary:disabled{opacity:0.5;cursor:not-allowed;}
+  .btn-primary.full{width:100%;}
+  .btn-secondary{padding:0.55rem 1rem;background:transparent;color:var(--texto-muted);border:1px solid rgba(0,0,0,0.15);border-radius:3px;font-size:0.75rem;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.18s;}
+  .btn-secondary:hover{border-color:var(--negro);color:var(--negro);}
+  .btn-danger{padding:0.4rem 0.75rem;background:transparent;color:#b83232;border:1px solid rgba(184,50,50,0.25);border-radius:3px;font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.18s;}
+  .btn-danger:hover{background:#b83232;color:white;border-color:#b83232;}
+  .btn-row{display:flex;gap:0.75rem;margin-top:1.25rem;flex-wrap:wrap;}
+
+  .image-upload-area{border:2px dashed rgba(201,169,122,0.35);border-radius:4px;padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--crema);position:relative;}
+  .image-upload-area:hover{border-color:var(--dorado);}
+  .image-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+  .upload-icon{font-size:2rem;margin-bottom:0.5rem;opacity:0.4;}
+  .image-upload-area p{font-size:0.8rem;color:var(--texto-muted);}
+  .image-upload-area small{font-size:0.7rem;color:var(--dorado);display:block;margin-top:0.25rem;}
+  .image-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:0.5rem;margin-top:0.75rem;}
+  .image-thumb{aspect-ratio:1;border-radius:3px;overflow:hidden;position:relative;background:var(--crema);}
+  .image-thumb img{width:100%;height:100%;object-fit:cover;}
+  .image-thumb-remove{position:absolute;top:3px;right:3px;width:18px;height:18px;background:rgba(0,0,0,0.65);border-radius:50%;border:none;color:white;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+
+  .color-picker-row{display:flex;gap:0.5rem;align-items:center;}
+  .color-swatch-input{width:42px;height:36px;padding:2px;border:1px solid rgba(0,0,0,0.12);border-radius:3px;cursor:pointer;}
+  .tag-list{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.75rem;}
+  .tag{display:inline-flex;align-items:center;gap:0.35rem;padding:0.28rem 0.65rem;background:var(--crema);border:1px solid rgba(201,169,122,0.35);border-radius:2px;font-size:0.72rem;color:var(--marron-medio);}
+  .tag-remove{cursor:pointer;opacity:0.45;line-height:1;}
+  .tag-remove:hover{opacity:1;color:#b83232;}
+  .color-dot{width:13px;height:13px;border-radius:50%;border:1px solid rgba(0,0,0,0.1);flex-shrink:0;}
+
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;}
+  .toggle-row label{font-size:0.82rem;color:var(--negro);}
+  .toggle{width:38px;height:22px;background:#d0c8c0;border-radius:11px;position:relative;cursor:pointer;border:none;transition:background 0.2s;flex-shrink:0;}
+  .toggle.on{background:var(--negro);}
+  .toggle::after{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;background:white;border-radius:50%;transition:left 0.2s;}
+  .toggle.on::after{left:19px;}
+
+  .table-wrap{overflow-x:auto;}
+  .products-table{width:100%;border-collapse:collapse;min-width:650px;}
+  .products-table th{font-size:0.65rem;letter-spacing:0.14em;color:var(--texto-muted);border-bottom:1px solid rgba(0,0,0,0.1);padding:0.5rem 0.75rem;text-align:left;font-weight:500;white-space:nowrap;}
+  .products-table td{padding:0.7rem 0.75rem;font-size:0.82rem;border-bottom:1px solid rgba(0,0,0,0.05);vertical-align:middle;}
+  .products-table tr:last-child td{border-bottom:none;}
+  .products-table tr:hover td{background:#faf7f3;}
+  .table-thumb{width:52px;height:38px;object-fit:cover;border-radius:2px;display:block;}
+  .table-thumb-empty{width:52px;height:38px;background:var(--crema);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--texto-muted);letter-spacing:0.05em;}
+  .table-actions{display:flex;gap:0.4rem;}
+
+  .items-list{display:flex;flex-direction:column;gap:0.4rem;margin-top:0.75rem;}
+  .item-row{display:flex;align-items:center;justify-content:space-between;padding:0.55rem 0.75rem;background:var(--crema);border:1px solid rgba(0,0,0,0.06);border-radius:3px;}
+  .item-name{font-size:0.82rem;}
+  .item-count{font-size:0.68rem;color:var(--texto-muted);margin-top:0.05rem;}
+
+  #product-form-wrap{display:none;margin-bottom:1.5rem;border-top:3px solid var(--dorado);}
+  .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
+  .section-title{font-size:0.72rem;letter-spacing:0.14em;color:var(--texto-muted);font-weight:500;}
+  .quick-btns{display:flex;gap:0.75rem;flex-wrap:wrap;}
+
+  .toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;background:var(--negro);color:var(--dorado);padding:0.8rem 1.2rem;border-radius:4px;font-size:0.8rem;letter-spacing:0.05em;transform:translateY(100px);opacity:0;transition:all 0.3s;pointer-events:none;border-left:3px solid var(--dorado);max-width:300px;}
+  .toast.show{transform:translateY(0);opacity:1;}
+
+  .loading-overlay{position:fixed;inset:0;background:rgba(15,10,6,0.7);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;}
+  .loading-overlay p{color:var(--dorado);font-size:0.85rem;letter-spacing:0.15em;}
+  .spinner{width:36px;height:36px;border:2px solid rgba(201,169,122,0.2);border-top-color:var(--dorado);border-radius:50%;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  @media(max-width:900px){.dash-grid{grid-template-columns:1fr;}.dash-grid-3{grid-template-columns:1fr 1fr;}.stats-row{grid-template-columns:1fr 1fr;}.dash-content{padding:1.25rem;}}
+  @media(max-width:560px){.dash-grid-3{grid-template-columns:1fr;}.dash-tab{padding:0.75rem 1rem;font-size:0.7rem;}.dash-content{padding:1rem;}.dash-header{padding:0.75rem 1rem;}.header-right{gap:0.5rem;}}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <p>CONECTANDO CON FIREBASE...</p>
+</div>
+
+<header class="dash-header">
+  <div class="dash-logo">
+    La <span>Trinidad</span>
+    <small>PANEL DE ADMINISTRACIÓN</small>
+  </div>
+  <div class="header-right">
+    <span class="sync-badge local" id="sync-badge"><span class="dot pulse"></span> Conectando...</span>
+    <a class="btn-go-catalog" href="index.html" target="_blank">Ver catálogo →</a>
+  </div>
+</header>
+
+<div class="dash-tabs">
+  <button class="dash-tab active" onclick="showTab('overview')" id="dtab-overview">Resumen</button>
+  <button class="dash-tab" onclick="showTab('products')" id="dtab-products">Productos</button>
+  <button class="dash-tab" onclick="showTab('catalog-data')" id="dtab-catalog-data">Categorías & Marcas</button>
+  <button class="dash-tab" onclick="showTab('settings')" id="dtab-settings">Configuración</button>
+</div>
+
+<div class="dash-content">
+
+  <!-- RESUMEN -->
+  <div class="dash-section active" id="dsec-overview">
+    <div class="stats-row">
+      <div class="stat-box accent"><div class="stat-num" id="stat-products">—</div><div class="stat-label">PRODUCTOS</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-visible">—</div><div class="stat-label">VISIBLES</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-cats">—</div><div class="stat-label">CATEGORÍAS</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-brands">—</div><div class="stat-label">MARCAS</div></div>
+    </div>
+    <div class="dash-card">
+      <h3>ACCESO RÁPIDO</h3>
+      <div class="quick-btns">
+        <button class="btn-primary" onclick="showTab('products');showProductForm()">+ Nuevo Producto</button>
+        <button class="btn-secondary" onclick="showTab('catalog-data')">Gestionar Categorías</button>
+        <button class="btn-secondary" onclick="showTab('settings')">Configuración WhatsApp</button>
+        <a class="btn-secondary" href="index.html" target="_blank" style="display:inline-flex;align-items:center;text-decoration:none">Ver Catálogo →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCTOS -->
+  <div class="dash-section" id="dsec-products">
+    <div class="section-header">
+      <span class="section-title">LISTA DE PRODUCTOS</span>
+      <button class="btn-primary" onclick="showProductForm()">+ Agregar Producto</button>
+    </div>
+    <div class="dash-card" id="product-form-wrap">
+      <h3 id="product-form-title">NUEVO PRODUCTO</h3>
+      <div class="dash-grid">
+        <div>
+          <div class="form-group">
+            <label>NOMBRE DEL MODELO *</label>
+            <input class="form-control" id="p-name" placeholder="ej. Classic Aviator Pro">
+          </div>
+          <div class="dash-grid" style="gap:0.75rem">
+            <div class="form-group">
+              <label>MARCA</label>
+              <select class="form-control" id="p-brand"><option value="">Seleccionar...</option></select>
+            </div>
+            <div class="form-group">
+              <label>CATEGORÍA</label>
+              <select class="form-control" id="p-category"><option value="">Seleccionar...</option></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>PRECIO (opcional)</label>
+            <input class="form-control" id="p-price" placeholder="ej. Gs. 350.000">
+          </div>
+          <div class="form-group">
+            <label>DESCRIPCIÓN</label>
+            <textarea class="form-control" id="p-desc" placeholder="Material, características, estilo..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>COLORES DISPONIBLES</label>
+            <div class="color-picker-row">
+              <input type="color" class="color-swatch-input" id="p-color-pick" value="#1A1A1A">
+              <input class="form-control" id="p-color-name" placeholder="Nombre del color (ej. Negro mate)">
+              <button class="btn-secondary" onclick="addProductColor()">+ Agregar</button>
+            </div>
+            <div class="tag-list" id="p-colors-list"></div>
+          </div>
+          <div class="toggle-row">
+            <label>Visible en catálogo público</label>
+            <button class="toggle on" id="p-visible" onclick="this.classList.toggle('on')"></button>
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            <label>FOTOS DEL PRODUCTO</label>
+            <div class="image-upload-area">
+              <input type="file" accept="image/*" multiple onchange="handleImageUpload(this)">
+              <div class="upload-icon">📷</div>
+              <p>Arrastrá imágenes aquí o hacé clic</p>
+              <small>JPG, PNG — múltiples fotos permitidas</small>
+            </div>
+            <div class="image-preview" id="image-preview"></div>
+          </div>
+          <div style="background:var(--crema);border-radius:3px;padding:1rem;margin-top:0.5rem;">
+            <p style="font-size:0.72rem;color:var(--texto-muted);line-height:1.7;">
+              💡 <strong>Tip:</strong> Las fotos se guardan directamente en Firebase. Podés subir varias y la primera será la foto principal del catálogo.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-save-product" onclick="saveProduct()">Guardar Producto</button>
+        <button class="btn-secondary" onclick="cancelProductForm()">Cancelar</button>
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="table-wrap">
+        <table class="products-table">
+          <thead><tr>
+            <th>FOTO</th><th>NOMBRE</th><th>MARCA</th><th>CATEGORÍA</th><th>PRECIO</th><th>VISIBLE</th><th>ACCIONES</th>
+          </tr></thead>
+          <tbody id="products-tbody"></tbody>
+        </table>
+      </div>
+      <p id="products-empty" style="text-align:center;padding:3rem;font-size:0.85rem;color:var(--texto-muted)">
+        Sin productos aún. Usá <strong>+ Agregar Producto</strong> para empezar.
+      </p>
+    </div>
+  </div>
+
+  <!-- CATEGORÍAS & MARCAS -->
+  <div class="dash-section" id="dsec-catalog-data">
+    <div class="dash-grid-3">
+      <div class="dash-card">
+        <h3>CATEGORÍAS</h3>
+        <div style="display:flex;gap:0.5rem">
+          <input class="form-control" id="new-cat" placeholder="ej. Lentes de sol" onkeydown="if(event.key==='Enter')addCatalogItem('categories','new-cat')">
+          <button class="btn-primary" onclick="addCatalogItem('categories','new-cat')">+</button>
+        </div>
+        <div class="items-list" id="cats-list"></div>
+      </div>
+      <div class="dash-card">
+        <h3>MARCAS</h3>
+        <div style="display:flex;gap:0.5rem">
+          <input class="form-control" id="new-brand" placeholder="ej. Ray-Ban" onkeydown="if(event.key==='Enter')addCatalogItem('brands','new-brand')">
+          <button class="btn-primary" onclick="addCatalogItem('brands','new-brand')">+</button>
+        </div>
+        <div class="items-list" id="brands-list"></div>
+      </div>
+      <div class="dash-card">
+        <h3>CÓMO SE USA</h3>
+        <p style="font-size:0.78rem;color:var(--texto-muted);line-height:1.8">
+          Las <strong>categorías</strong> aparecen como filtros en el catálogo público.<br><br>
+          Las <strong>marcas</strong> se muestran en cada tarjeta de producto.<br><br>
+          Primero creá tus categorías y marcas, luego asignalas al crear productos.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIGURACIÓN -->
+  <div class="dash-section" id="dsec-settings">
+    <div class="dash-grid">
+      <div class="dash-card">
+        <h3>WHATSAPP</h3>
+        <div class="form-group">
+          <label>NÚMERO DE WHATSAPP</label>
+          <p style="font-size:0.7rem;color:var(--texto-muted);margin-bottom:0.4rem">Sin espacios ni +. Ejemplo: <strong>595981234567</strong></p>
+          <input class="form-control" id="wpp-number" placeholder="595981234567">
+        </div>
+        <div class="form-group">
+          <label>MENSAJE PREDETERMINADO</label>
+          <textarea class="form-control" id="wpp-message" placeholder="Hola! Me interesa este producto: "></textarea>
+          <p style="font-size:0.68rem;color:var(--texto-muted);margin-top:0.3rem">El nombre del producto se agrega automáticamente al final.</p>
+        </div>
+        <button class="btn-primary full" onclick="saveSettings()">Guardar Configuración</button>
+      </div>
+      <div class="dash-card">
+        <h3>TEXTOS DEL CATÁLOGO</h3>
+        <div class="form-group"><label>NOMBRE DE LA ÓPTICA</label><input class="form-control" id="cfg-name" placeholder="ej. La Trinidad"></div>
+        <div class="form-group"><label>COLECCIÓN / TEMPORADA</label><input class="form-control" id="cfg-eyebrow" placeholder="ej. Colección 2025"></div>
+        <div class="form-group"><label>TÍTULO HERO (línea 1)</label><input class="form-control" id="cfg-hero1" placeholder="ej. Ver con estilo"></div>
+        <div class="form-group"><label>TÍTULO HERO (línea 2, cursiva dorada)</label><input class="form-control" id="cfg-hero2" placeholder="ej. es verlo todo"></div>
+        <div class="form-group"><label>SUBTÍTULO</label><input class="form-control" id="cfg-subtitle" placeholder="ej. Monturas premium · Lentes de sol"></div>
+        <button class="btn-primary full" onclick="saveSettings()">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, doc, getDocs, getDoc,
+  setDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ── CONFIG ──────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyD1zhcZFNxMRh4L_YV1IEJA8TE6ge0TW9Q",
+  authDomain: "optica-la-trinidad.firebaseapp.com",
+  projectId: "optica-la-trinidad",
+  storageBucket: "optica-la-trinidad.firebasestorage.app",
+  messagingSenderId: "849483364285",
+  appId: "1:849483364285:web:1ff892f5ffa76b12d544d4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// ── ESTADO LOCAL (cache) ─────────────────────────────────
+window.state = { products:[], categories:[], brands:[], settings:{} };
+
+// ── UI HELPERS ───────────────────────────────────────────
+function setBadge(status) {
+  const b = document.getElementById('sync-badge');
+  const map = {
+    connecting: ['local','<span class="dot pulse"></span> Conectando...'],
+    connected:  ['connected','<span class="dot"></span> Firebase ✓'],
+    syncing:    ['syncing','<span class="dot pulse"></span> Guardando...'],
+    error:      ['error','<span class="dot"></span> Sin conexión']
+  };
+  const [cls, html] = map[status] || map.connecting;
+  b.className = 'sync-badge ' + cls;
+  b.innerHTML = html;
+}
+
+function hideLoading() { document.getElementById('loading-overlay').style.display='none'; }
+
+window.toast = function(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
+};
+
+// ── FIRESTORE HELPERS ────────────────────────────────────
+async function fbSet(col, id, data) {
+  setBadge('syncing');
+  await setDoc(doc(db, col, id), { ...data, updatedAt: serverTimestamp() });
+  setBadge('connected');
+}
+async function fbDelete(col, id) {
+  setBadge('syncing');
+  await deleteDoc(doc(db, col, id));
+  setBadge('connected');
+}
+
+// ── SETTINGS ─────────────────────────────────────────────
+async function loadSettings() {
+  try {
+    const snap = await getDoc(doc(db, 'config', 'settings'));
+    if (snap.exists()) { window.state.settings = snap.data(); applySettingsToForm(); }
+  } catch(e) {}
+}
+window.saveSettings = async function() {
+  const s = {
+    wppNumber:  document.getElementById('wpp-number').value.trim(),
+    wppMessage: document.getElementById('wpp-message').value.trim(),
+    shopName:   document.getElementById('cfg-name').value.trim(),
+    eyebrow:    document.getElementById('cfg-eyebrow').value.trim(),
+    hero1:      document.getElementById('cfg-hero1').value.trim(),
+    hero2:      document.getElementById('cfg-hero2').value.trim(),
+    subtitle:   document.getElementById('cfg-subtitle').value.trim()
+  };
+  try {
+    await fbSet('config','settings', s);
+    window.state.settings = s;
+    toast('✓ Configuración guardada en Firebase');
+  } catch(e) { toast('Error al guardar: ' + e.message); }
+};
+function applySettingsToForm() {
+  const s = window.state.settings;
+  const fields = {'wpp-number':'wppNumber','wpp-message':'wppMessage','cfg-name':'shopName','cfg-eyebrow':'eyebrow','cfg-hero1':'hero1','cfg-hero2':'hero2','cfg-subtitle':'subtitle'};
+  Object.entries(fields).forEach(([id,k]) => { const el=document.getElementById(id); if(el&&s[k]) el.value=s[k]; });
+}
+
+// ── CATALOG DATA (categorías & marcas) ────────────────────
+async function loadCatalogData() {
+  try {
+    const snap = await getDoc(doc(db, 'config', 'catalog'));
+    if (snap.exists()) {
+      const d = snap.data();
+      window.state.categories = d.categories || [];
+      window.state.brands     = d.brands     || [];
+    }
+  } catch(e) {}
+}
+async function saveCatalogData() {
+  await fbSet('config','catalog',{ categories: window.state.categories, brands: window.state.brands });
+}
+
+window.addCatalogItem = async function(type, inputId) {
+  const val = document.getElementById(inputId).value.trim();
+  if (!val) return;
+  if (window.state[type].includes(val)) { toast('Ya existe'); return; }
+  window.state[type].push(val);
+  document.getElementById(inputId).value = '';
+  try {
+    await saveCatalogData();
+    renderLists(); populateSelects(); toast('✓ Guardado');
+  } catch(e) { toast('Error: '+e.message); }
+};
+
+window.removeCatalogItem = async function(type, val) {
+  window.state[type] = window.state[type].filter(v => v !== val);
+  try {
+    await saveCatalogData();
+    renderLists(); populateSelects();
+  } catch(e) { toast('Error: '+e.message); }
+};
+
+function renderLists() {
+  renderOneList('categories','cats-list');
+  renderOneList('brands','brands-list');
+}
+function renderOneList(type, listId) {
+  const el = document.getElementById(listId); if(!el) return;
+  const items = window.state[type] || [];
+  if (!items.length) { el.innerHTML='<p style="font-size:0.78rem;color:var(--texto-muted);padding:0.5rem 0">Sin elementos aún.</p>'; return; }
+  el.innerHTML = items.map(v => {
+    const count = type==='categories'
+      ? window.state.products.filter(p=>p.category===v).length
+      : window.state.products.filter(p=>p.brand===v).length;
+    return `<div class="item-row">
+      <div><div class="item-name">${v}</div>${count?`<div class="item-count">${count} producto${count!==1?'s':''}</div>`:''}</div>
+      <button class="btn-danger" onclick="removeCatalogItem('${type}','${v.replace(/'/g,"\\'")}')">Eliminar</button>
+    </div>`;
+  }).join('');
+}
+function populateSelects() {
+  const b=document.getElementById('p-brand'), c=document.getElementById('p-category');
+  if(!b||!c) return;
+  const pb=b.value, pc=c.value;
+  b.innerHTML='<option value="">Seleccionar marca...</option>'+(window.state.brands||[]).map(x=>`<option value="${x}">${x}</option>`).join('');
+  c.innerHTML='<option value="">Seleccionar categoría...</option>'+(window.state.categories||[]).map(x=>`<option value="${x}">${x}</option>`).join('');
+  if(pb) b.value=pb; if(pc) c.value=pc;
+}
+
+// ── PRODUCTOS (listener en tiempo real) ───────────────────
+function startProductListener() {
+  onSnapshot(collection(db,'products'), snap => {
+    window.state.products = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    window.state.products.sort((a,b) => (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    renderTable();
+    updateStats();
+    renderLists();
+    setBadge('connected');
+  }, err => {
+    setBadge('error');
+    console.error(err);
+  });
+}
+
+// ── COLORES ───────────────────────────────────────────────
+window._productColors = [];
+window.addProductColor = function() {
+  const hex=document.getElementById('p-color-pick').value;
+  const name=document.getElementById('p-color-name').value.trim()||hex;
+  window._productColors.push({hex,name});
+  renderColors();
+  document.getElementById('p-color-name').value='';
+};
+window.removeProductColor = function(i){ window._productColors.splice(i,1); renderColors(); };
+function renderColors() {
+  document.getElementById('p-colors-list').innerHTML=window._productColors.map((c,i)=>`
+    <span class="tag"><span class="color-dot" style="background:${c.hex}"></span>${c.name}<span class="tag-remove" onclick="removeProductColor(${i})">×</span></span>`).join('');
+}
+
+// ── IMÁGENES (base64) ─────────────────────────────────────
+window._productImages = [];
+window.handleImageUpload = function(input) {
+  Array.from(input.files).forEach(file => {
+    const r=new FileReader();
+    r.onload=e=>{ window._productImages.push(e.target.result); renderPreviews(); };
+    r.readAsDataURL(file);
+  });
+  input.value='';
+};
+window.removeImage = function(i){ window._productImages.splice(i,1); renderPreviews(); };
+function renderPreviews() {
+  document.getElementById('image-preview').innerHTML=window._productImages.map((src,i)=>`
+    <div class="image-thumb"><img src="${src}"><button class="image-thumb-remove" onclick="removeImage(${i})">×</button></div>`).join('');
+}
+
+// ── FORMULARIO PRODUCTO ───────────────────────────────────
+window._editingId = null;
+
+window.showProductForm = function() {
+  clearForm(); window._editingId=null;
+  document.getElementById('product-form-title').textContent='NUEVO PRODUCTO';
+  document.getElementById('product-form-wrap').style.display='block';
+  document.getElementById('product-form-wrap').scrollIntoView({behavior:'smooth',block:'start'});
+};
+window.cancelProductForm = function() {
+  document.getElementById('product-form-wrap').style.display='none'; clearForm();
+};
+function clearForm() {
+  ['p-name','p-price','p-desc','p-color-name'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const b=document.getElementById('p-brand'); if(b)b.selectedIndex=0;
+  const c=document.getElementById('p-category'); if(c)c.selectedIndex=0;
+  const vis=document.getElementById('p-visible'); if(vis)vis.classList.add('on');
+  window._productImages=[]; window._productColors=[];
+  renderPreviews(); renderColors();
+}
+
+window.saveProduct = async function() {
+  const name=document.getElementById('p-name').value.trim();
+  if(!name){ toast('El nombre es obligatorio'); return; }
+  const btn=document.getElementById('btn-save-product');
+  btn.disabled=true; btn.textContent='Guardando...';
+  const product = {
+    name,
+    brand:       document.getElementById('p-brand').value,
+    category:    document.getElementById('p-category').value,
+    price:       document.getElementById('p-price').value.trim(),
+    description: document.getElementById('p-desc').value.trim(),
+    visible:     document.getElementById('p-visible').classList.contains('on'),
+    images:      [...window._productImages],
+    colors:      [...window._productColors],
+  };
+  if (!window._editingId) product.createdAt = serverTimestamp();
+  try {
+    const id = window._editingId || Date.now().toString();
+    await fbSet('products', id, product);
+    cancelProductForm();
+    toast(window._editingId ? '✓ Producto actualizado' : '✓ Producto agregado');
+    window._editingId=null;
+  } catch(e) { toast('Error: '+e.message); }
+  btn.disabled=false; btn.textContent='Guardar Producto';
+};
+
+window.editProduct = function(id) {
+  const p=window.state.products.find(x=>x.id===id); if(!p) return;
+  populateSelects(); window._editingId=id;
+  document.getElementById('product-form-title').textContent='EDITAR PRODUCTO';
+  document.getElementById('p-name').value=p.name||'';
+  document.getElementById('p-brand').value=p.brand||'';
+  document.getElementById('p-category').value=p.category||'';
+  document.getElementById('p-price').value=p.price||'';
+  document.getElementById('p-desc').value=p.description||'';
+  const vis=document.getElementById('p-visible');
+  p.visible?vis.classList.add('on'):vis.classList.remove('on');
+  window._productImages=[...(p.images||[])];
+  window._productColors=[...(p.colors||[])];
+  renderPreviews(); renderColors();
+  document.getElementById('product-form-wrap').style.display='block';
+  document.getElementById('product-form-wrap').scrollIntoView({behavior:'smooth',block:'start'});
+};
+
+window.toggleVisible = async function(id) {
+  const p=window.state.products.find(x=>x.id===id); if(!p) return;
+  try {
+    await updateDoc(doc(db,'products',id),{ visible:!p.visible, updatedAt:serverTimestamp() });
+    toast(!p.visible ? '✓ Visible en catálogo' : 'Ocultado del catálogo');
+  } catch(e){ toast('Error: '+e.message); }
+};
+
+window.deleteProduct = async function(id) {
+  if(!confirm('¿Eliminar este producto del catálogo?')) return;
+  try { await fbDelete('products',id); toast('Producto eliminado'); }
+  catch(e){ toast('Error: '+e.message); }
+};
+
+// ── RENDER TABLA ──────────────────────────────────────────
+function renderTable() {
+  const tbody=document.getElementById('products-tbody');
+  const empty=document.getElementById('products-empty');
+  if(!tbody) return;
+  if(!window.state.products.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  tbody.innerHTML=window.state.products.map(p=>`
+    <tr>
+      <td>${p.images&&p.images.length?`<img class="table-thumb" src="${p.images[0]}" alt="${p.name}">`:
+        `<div class="table-thumb-empty">SIN FOTO</div>`}</td>
+      <td><strong>${p.name}</strong></td>
+      <td>${p.brand||'—'}</td>
+      <td>${p.category||'—'}</td>
+      <td>${p.price||'—'}</td>
+      <td><button class="toggle ${p.visible?'on':''}" onclick="toggleVisible('${p.id}')" title="${p.visible?'Visible':'Oculto'}"></button></td>
+      <td><div class="table-actions">
+        <button class="btn-secondary" onclick="showTab('products');editProduct('${p.id}')">Editar</button>
+        <button class="btn-danger" onclick="deleteProduct('${p.id}')">×</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+// ── STATS ─────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById('stat-products').textContent=window.state.products.length;
+  document.getElementById('stat-visible').textContent=window.state.products.filter(p=>p.visible).length;
+  document.getElementById('stat-cats').textContent=(window.state.categories||[]).length;
+  document.getElementById('stat-brands').textContent=(window.state.brands||[]).length;
+}
+
+// ── TABS ──────────────────────────────────────────────────
+window.showTab = function(t) {
+  document.querySelectorAll('.dash-section').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.dash-tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('dsec-'+t).classList.add('active');
+  document.getElementById('dtab-'+t).classList.add('active');
+  if(t==='products'){ populateSelects(); renderTable(); }
+  if(t==='catalog-data') renderLists();
+  if(t==='settings') applySettingsToForm();
+  if(t==='overview') updateStats();
+};
+
+// ── ARRANQUE ──────────────────────────────────────────────
+(async function init() {
+  setBadge('connecting');
+  try {
+    await Promise.all([loadSettings(), loadCatalogData()]);
+    startProductListener();
+    renderLists(); populateSelects(); updateStats();
+  } catch(e) {
+    setBadge('error');
+    toast('Error de conexión con Firebase');
+    console.error(e);
+  }
+  hideLoading();
+})();
+
+</script>
+</body>
+</html>
